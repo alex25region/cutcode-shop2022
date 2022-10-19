@@ -1,6 +1,5 @@
 # CUTCODE
 
-
 # Установка и настройка проекта
 
 Устанавливаем laravel проект:
@@ -45,4 +44,7 @@ DB_PASSWORD=
 ```php
 php artisan storage:link
 ```
+
 # cutcode-shop2022
+
+test
