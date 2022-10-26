@@ -6,7 +6,6 @@ namespace App\Logging\Telegram;
 
 use App\Services\Telegram\TelegramBotApi;
 use Monolog\Handler\AbstractProcessingHandler;
-use Monolog\Handler\FormattedRecord;
 use Monolog\Logger;
 
 
@@ -20,7 +19,7 @@ class TelegramLoggerHandler extends AbstractProcessingHandler
         $level = Logger::toMonologLevel($config['level']);
         parent::__construct($level);
 
-        $this->chatId = $config['chat_id'];
+        $this->chatId = (int) $config['chat_id']; // приводим строку к int
         $this->token = $config['token'];
     }
 
