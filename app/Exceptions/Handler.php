@@ -48,6 +48,11 @@ class Handler extends ExceptionHandler
             //
         });
 
+        $this->renderable(function (\DomainException $e) {
+            flash()->alert($e->getMessage());
+            return back();
+        });
+
 //        // На выходе должен быть response
 //        $this->renderable(function (NotFoundHttpException $e) {
 //            // return response('welcome');

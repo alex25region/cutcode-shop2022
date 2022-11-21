@@ -7,19 +7,57 @@ use Illuminate\Database\Eloquent\Model;
 
 trait HasSlug
 {
-    protected static function bootHasSlug ()
+    protected static function bootHasSlug () :void
     {
 //        parent::boot();
 
+        static::creating(function (Model $item) {
+            $item->makeSlug();
+        });
+    }
+    protected function makeSlug () : void
+    {
+        $slug = $this->slugUnique(
+            str($this->{$this->slugFrom()})
+            ->slug()
+            ->value()
+        );
+
+        $this->{$this->slugColumn()} = $this->{$this->slugColumn()} ?? $slug;
+    }
+
+    private function slugUnique (string $slug): string
+    {
+        $originalSlug = $slug;
         $i = 0;
 
-        // TODO Решить задачу с уникальностью slug:
-        // В append надо добавить счетчик, т.е. если slug сущестовует то добавлять $i
-        static::creating(function (Model $item) {
-            $item->slug = $item->slug ?? str($item->title)
-            ->append(rand(1, 1000))
-            ->slug();
-        });
+        while ($this->isSlugExist($slug)) {
+            $i++;
+
+            $slug = $originalSlug . '-' . $i;
+        }
+
+        return $slug;
+
+    }
+
+    protected function slugFrom () : string
+    {
+        return 'title';
+    }
+
+    protected function slugColumn () : string
+    {
+        return 'slug';
+    }
+
+    private function isSlugExist (string $slug) : bool
+    {
+        $query = $this->newQuery()
+            ->where(self::slugColumn(), $slug)
+            ->withoutGlobalScopes();
+
+        return $query->exists();
     }
 
 
